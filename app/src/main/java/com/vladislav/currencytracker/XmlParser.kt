@@ -1,5 +1,6 @@
 package com.vladislav.currencytracker
 
+import android.util.Log
 import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
@@ -12,6 +13,13 @@ class XmlParser(val inputStream: InputStream) {
         parser.setInput(inputStream, null)
         parser.nextTag()
         parser.require(XmlPullParser.START_TAG, null, ROOT_TAG)
+
+        if(parser.isEmptyElementTag)
+        {
+            Log.d("Parser", "empty tag")
+            return
+        }
+
         val date = parser.getAttributeValue(null, DATE)
 
         while (parser.next() != XmlPullParser.END_TAG) {
