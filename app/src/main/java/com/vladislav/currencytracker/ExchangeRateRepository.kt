@@ -12,7 +12,6 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener {
         for (stream in inputStreams) {
             exchangeRates.add(XmlParser(stream).test())
         }
-        print("HELLo")
     }
 
     override fun onRequestFailure(exceptionMessage: String) {
@@ -33,7 +32,6 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener {
         val tomorrowUrl = BASE_URL + sdf.format(dateDayAfter.time)
         val yesterdayUrl = BASE_URL + sdf.format(dateDayBefore.time)
 
-        //TODO(make sure received result is sorted by date)
         val downloadManager = DownloadManager()
         downloadManager.setupDownloader(listOf(todayUrl, tomorrowUrl, yesterdayUrl), this)
         downloadManager.downloadAll()

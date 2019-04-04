@@ -1,6 +1,5 @@
 package com.vladislav.currencytracker
 
-import android.util.Log
 import okhttp3.*
 import java.io.IOException
 import java.io.InputStream
@@ -13,10 +12,9 @@ class DownloadManager() {
         fun onRequestSuccess(inputStreams: MutableList<InputStream>)
     }
 
-    private var completedRequests = 0
     private val completedStreams = mutableListOf<InputStream>()
     private val client = OkHttpClient()
-    private lateinit var urls: List<String>
+    private lateinit var urlsQueue: ArrayDeque<String>
     private lateinit var listener: OnRequestFinishListener
 
     private val requestCallback = object : Callback {
@@ -27,23 +25,21 @@ class DownloadManager() {
         override fun onResponse(call: Call, response: Response) {
             response.body()?.let {
                 completedStreams.add(it.byteStream())
-                completedRequests += 1
-                if (urls.size == completedRequests) {
+                if (urlsQueue.isEmpty()) {
                     listener.onRequestSuccess(completedStreams)
                 }
+                downloadAll()
             }
         }
     }
 
     fun setupDownloader(urls: List<String>, listener: OnRequestFinishListener) {
-        this.urls = urls
+        this.urlsQueue = ArrayDeque(urls)
         this.listener = listener
     }
 
     fun downloadAll() {
-        for (url in urls) {
-            makeRequest(url)
-        }
+        makeRequest(urlsQueue.pop())
     }
 
     private fun makeRequest(url: String) {
