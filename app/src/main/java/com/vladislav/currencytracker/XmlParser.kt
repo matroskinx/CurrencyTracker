@@ -1,16 +1,16 @@
 package com.vladislav.currencytracker
 
-import android.content.res.XmlResourceParser
+import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
+import java.io.InputStream
 
-class XmlParser(xmlFile: XmlResourceParser) {
+class XmlParser(val inputStream: InputStream) {
     private val elements = mutableListOf<CurrencyItem>()
-    var parser: XmlPullParser = xmlFile
+    var parser: XmlPullParser = Xml.newPullParser()
 
     fun test() {
-        //call twice because of xmlResources for testing purposes
-        parser.next()
-        parser.next()
+        parser.setInput(inputStream, null)
+        parser.nextTag()
         parser.require(XmlPullParser.START_TAG, null, ROOT_TAG)
         val date = parser.getAttributeValue(null, DATE)
 
