@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.Log
+import android.util.Xml
 import java.io.InputStream
 
 
@@ -12,8 +13,8 @@ class MainActivity : AppCompatActivity(), DownloadManager.OnRequestFinishListene
         Log.d(TAG, "request:fail")
     }
 
-    override fun onRequestSuccess(inputStream: InputStream) {
-        XmlParser(inputStream).test()
+    override fun onRequestSuccess(inputStreams: MutableList<InputStream>) {
+
         Log.d(TAG, "request:ok")
     }
 
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity(), DownloadManager.OnRequestFinishListene
         setContentView(R.layout.activity_main)
 
         button.setOnClickListener {
-            DownloadManager(this).download("http://www.nbrb.by/Services/XmlExRates.aspx?ondate=04.04.2019")
+            ExchangeRateRepository().getRates()
         }
     }
 

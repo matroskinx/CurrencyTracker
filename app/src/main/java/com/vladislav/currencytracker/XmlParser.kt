@@ -3,13 +3,14 @@ package com.vladislav.currencytracker
 import android.util.Log
 import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
 import java.io.InputStream
 
 class XmlParser(val inputStream: InputStream) {
     private val elements = mutableListOf<CurrencyItem>()
     var parser: XmlPullParser = Xml.newPullParser()
 
-    fun test() {
+    fun test(): DayExchangeRates {
         parser.setInput(inputStream, null)
         parser.nextTag()
         parser.require(XmlPullParser.START_TAG, null, ROOT_TAG)
@@ -17,7 +18,7 @@ class XmlParser(val inputStream: InputStream) {
         if(parser.isEmptyElementTag)
         {
             Log.d("Parser", "empty tag")
-            return
+            throw XmlPullParserException("Document is empty. Rates are not available")
         }
 
         val date = parser.getAttributeValue(null, DATE)
@@ -30,6 +31,8 @@ class XmlParser(val inputStream: InputStream) {
                 elements.add(readCurrency(parser))
             }
         }
+
+        return DayExchangeRates(elements, date)
     }
 
     private fun readCurrency(parser: XmlPullParser): CurrencyItem {
