@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProviders.of(this).get(ExchangeRateRepository::class.java)
 
-        val exchangeRatesObserver = Observer<MutableList<DayExchangeRates>> {
+        val exchangeRatesObserver = Observer<List<DayExchangeRates>> {
             Toast.makeText(this, "Data downloaded", Toast.LENGTH_LONG).show()
         }
 
