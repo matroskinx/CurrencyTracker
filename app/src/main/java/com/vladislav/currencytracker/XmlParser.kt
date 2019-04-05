@@ -10,7 +10,7 @@ class XmlParser(val inputStream: InputStream) {
     private val elements = mutableListOf<CurrencyItem>()
     var parser: XmlPullParser = Xml.newPullParser()
 
-    fun test(): DayExchangeRates {
+    fun parse(): DayExchangeRates {
         parser.setInput(inputStream, null)
         parser.nextTag()
         parser.require(XmlPullParser.START_TAG, null, ROOT_TAG)

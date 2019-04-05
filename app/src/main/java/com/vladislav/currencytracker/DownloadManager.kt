@@ -59,11 +59,11 @@ class DownloadManager {
     private fun processStreams(): List<DayExchangeRates>
     {
         lateinit var tomorrowRates: DayExchangeRates
-        val todayRates: DayExchangeRates = XmlParser(completedStreams[TODAY]).test()
-        val yesterdayRates: DayExchangeRates = XmlParser(completedStreams[YESTERDAY]).test()
+        val todayRates: DayExchangeRates = XmlParser(completedStreams[TODAY]).parse()
+        val yesterdayRates: DayExchangeRates = XmlParser(completedStreams[YESTERDAY]).parse()
 
         try {
-            tomorrowRates = XmlParser(completedStreams[TOMORROW]).test()
+            tomorrowRates = XmlParser(completedStreams[TOMORROW]).parse()
         } catch (e: XmlPullParserException) {
             return listOf(yesterdayRates, todayRates)
         }
