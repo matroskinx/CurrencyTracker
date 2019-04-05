@@ -8,10 +8,10 @@ import androidx.lifecycle.ViewModel
 class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewModel() {
 
     val exchangeRates = MutableLiveData<List<DayExchangeRates>>()
-    var isLoading: Boolean = false
+    var isLoading: MutableLiveData<Boolean> = MutableLiveData()
 
     override fun onRequestSuccess(rates: List<DayExchangeRates>) {
-        isLoading = false
+        isLoading.postValue(false)
         exchangeRates.postValue(rates)
     }
 
@@ -20,7 +20,7 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
     }
 
     fun getRates() {
-        isLoading = true
+        isLoading.value = true
         val downloadManager = DownloadManager()
         downloadManager.setOnDownloadCompleteListener(this)
         downloadManager.downloadAll()

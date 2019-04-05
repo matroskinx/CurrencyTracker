@@ -6,7 +6,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.logging.XMLFormatter
 
 class DownloadManager {
 
@@ -38,8 +37,7 @@ class DownloadManager {
         }
     }
 
-    private fun formUrls()
-    {
+    private fun formUrls() {
         val currentDate = Calendar.getInstance()
 
         val dateDayBefore = Calendar.getInstance()
@@ -56,8 +54,7 @@ class DownloadManager {
         urlsQueue.addAll(listOf(todayUrl, tomorrowUrl, yesterdayUrl))
     }
 
-    private fun processStreams(): List<DayExchangeRates>
-    {
+    private fun processStreams(): List<DayExchangeRates> {
         lateinit var tomorrowRates: DayExchangeRates
         val todayRates: DayExchangeRates = XmlParser(completedStreams[TODAY]).parse()
         val yesterdayRates: DayExchangeRates = XmlParser(completedStreams[YESTERDAY]).parse()
