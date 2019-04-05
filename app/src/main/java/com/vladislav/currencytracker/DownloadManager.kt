@@ -5,7 +5,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.util.*
 
-class DownloadManager() {
+class DownloadManager {
 
     interface OnRequestFinishListener {
         fun onRequestFailure(exceptionMessage: String)
@@ -22,13 +22,15 @@ class DownloadManager() {
             listener.onRequestFailure(e.localizedMessage)
         }
 
+
         override fun onResponse(call: Call, response: Response) {
             response.body()?.let {
                 completedStreams.add(it.byteStream())
                 if (urlsQueue.isEmpty()) {
                     listener.onRequestSuccess(completedStreams)
+                } else {
+                    downloadAll()
                 }
-                downloadAll()
             }
         }
     }
@@ -39,7 +41,9 @@ class DownloadManager() {
     }
 
     fun downloadAll() {
-        makeRequest(urlsQueue.pop())
+        if (!urlsQueue.isEmpty()) {
+            makeRequest(urlsQueue.pop())
+        }
     }
 
     private fun makeRequest(url: String) {
