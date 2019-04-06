@@ -1,10 +1,13 @@
 package com.vladislav.currencytracker
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.Log
 import android.util.Xml
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -37,10 +40,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         val isLoadingObserver = Observer<Boolean> {
-            if(it) {
+            if (it) {
                 progressBar.visibility = View.VISIBLE
-            }
-            else {
+            } else {
                 progressBar.visibility = View.GONE
             }
         }
@@ -48,6 +50,24 @@ class MainActivity : AppCompatActivity() {
         viewModel.exchangeRates.observe(this, exchangeRatesObserver)
         viewModel.isLoading.observe(this, isLoadingObserver)
         viewModel.getRates()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.settings_menu_item -> {
+                Toast.makeText(this, "Open settings", Toast.LENGTH_LONG).show()
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     companion object {

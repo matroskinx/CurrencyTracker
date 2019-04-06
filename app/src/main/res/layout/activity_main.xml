@@ -26,12 +26,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/second_date" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
-            android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent" tools:text="20.05.2019"/>
+            android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent" tools:text="20.05.2019"
+            android:textSize="10sp"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/first_date" app:layout_constraintEnd_toStartOf="@+id/second_date"
             android:layout_marginEnd="16dp" android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
-            tools:text="19.05.2019"/>
+            tools:text="19.05.2019" android:textSize="10sp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
