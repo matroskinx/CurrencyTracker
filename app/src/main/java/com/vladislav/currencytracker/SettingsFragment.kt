@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_settings.*
 import java.lang.IllegalStateException
 
 class SettingsFragment : Fragment() {
@@ -26,6 +27,24 @@ class SettingsFragment : Fragment() {
         activity?.let {
             viewModel = ViewModelProviders.of(it).get(ExchangeRateRepository::class.java)
         } ?: throw IllegalStateException("Invalid activity")
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        linearLayoutManager = LinearLayoutManager(activity)
+        rv_settings.layoutManager = linearLayoutManager
+        rv_settings.setHasFixedSize(true)
+
+        val currencyItem = CurrencyItem("1", "2", "usd", "4", "test", "2")
+        val currencyItem2 = CurrencyItem("2", "3", "eur", "5", "test", "5")
+
+        val dayExchangeRates = DayExchangeRates(mutableListOf(currencyItem, currencyItem2), "06.04/2019")
+        val sitem = SettingsItem("1", true)
+        val sitem2 = SettingsItem("2", false)
+        val boolList = mutableListOf(sitem, sitem2)
+
+        adapter = SettingsRecyclerAdapter(dayExchangeRates, boolList)
+        rv_settings.adapter = adapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
