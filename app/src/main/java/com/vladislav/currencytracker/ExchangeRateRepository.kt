@@ -12,19 +12,25 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
     val visibleRates = MutableLiveData<List<DayExchangeRates>>()
     var settingsList = mutableListOf<SettingsItem>()
     var isLoading: MutableLiveData<Boolean> = MutableLiveData()
+    private var isLoaded = false
 
     override fun onRequestSuccess(rates: List<DayExchangeRates>) {
         isLoading.postValue(false)
+        isLoaded = true
         exchangeRates = rates
         getVisibleRates(rates)
     }
 
     override fun onRequestFailure(exceptionMessage: String) {
         isLoading.postValue(false)
+        isLoaded = false
         Log.d(TAG, "Failed to download data: $exceptionMessage")
     }
 
     fun getRates(sharedPreferences: SharedPreferences) {
+        if(isLoaded) {
+            return
+        }
         isLoading.value = true
         settingsList = SettingsManager(sharedPreferences).readSettings()
         val downloadManager = DownloadManager()
