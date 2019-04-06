@@ -16,6 +16,7 @@ class SettingsFragment : Fragment() {
     private lateinit var adapter: SettingsRecyclerAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_settings, container, false)
     }
 
