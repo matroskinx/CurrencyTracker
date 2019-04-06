@@ -35,15 +35,7 @@ class SettingsFragment : Fragment() {
         rv_settings.layoutManager = linearLayoutManager
         rv_settings.setHasFixedSize(true)
 
-        val currencyItem = CurrencyItem("1", "2", "usd", "4", "test", "2")
-        val currencyItem2 = CurrencyItem("2", "3", "eur", "5", "test", "5")
-
-        val dayExchangeRates = DayExchangeRates(mutableListOf(currencyItem, currencyItem2), "06.04/2019")
-        val sitem = SettingsItem("1", true)
-        val sitem2 = SettingsItem("2", false)
-        val boolList = mutableListOf(sitem, sitem2)
-
-        adapter = SettingsRecyclerAdapter(dayExchangeRates, boolList)
+        adapter = SettingsRecyclerAdapter(viewModel.exchangeRates[0], viewModel.settingsList)
         rv_settings.adapter = adapter
     }
 

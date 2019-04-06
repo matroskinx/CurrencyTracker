@@ -1,5 +1,7 @@
 package com.vladislav.currencytracker
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import androidx.core.app.ActivityCompat.invalidateOptionsMenu
@@ -16,6 +18,7 @@ class CurrencyFragment : Fragment() {
     private lateinit var viewModel: ExchangeRateRepository
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RatesRecyclerAdapter
+    private var sharedPreferences: SharedPreferences? = null
     private var isLoaded: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -49,9 +52,13 @@ class CurrencyFragment : Fragment() {
             }
         }
 
-        viewModel.exchangeRates.observe(this, exchangeRatesObserver)
+
+        viewModel.visibleRates.observe(this, exchangeRatesObserver)
         viewModel.isLoading.observe(this, isLoadingObserver)
-        viewModel.getRates()
+
+        sharedPreferences?.let {
+            viewModel.getRates(it)
+        } ?: throw IllegalStateException("Unable to get preferences")
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -67,6 +74,8 @@ class CurrencyFragment : Fragment() {
         activity?.let {
             viewModel = ViewModelProviders.of(it).get(ExchangeRateRepository::class.java)
         } ?: throw IllegalStateException("Invalid activity")
+
+        sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
