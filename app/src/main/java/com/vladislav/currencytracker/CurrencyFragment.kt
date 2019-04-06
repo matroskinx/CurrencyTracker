@@ -2,6 +2,7 @@ package com.vladislav.currencytracker
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -15,6 +16,7 @@ class CurrencyFragment : Fragment() {
     private lateinit var viewModel: ExchangeRateRepository
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: RatesRecyclerAdapter
+    private var isLoaded: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -34,7 +36,10 @@ class CurrencyFragment : Fragment() {
             second_date.text = it[1].date
             adapter = RatesRecyclerAdapter(it)
             rv_currency.adapter = adapter
+            isLoaded = true
+            invalidateOptionsMenu(activity)
         }
+
 
         val isLoadingObserver = Observer<Boolean> {
             if (it) {
@@ -47,6 +52,13 @@ class CurrencyFragment : Fragment() {
         viewModel.exchangeRates.observe(this, exchangeRatesObserver)
         viewModel.isLoading.observe(this, isLoadingObserver)
         viewModel.getRates()
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        if (isLoaded) {
+            menu.findItem(R.id.settingsFragment).isVisible = true
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
