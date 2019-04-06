@@ -6,6 +6,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class DownloadManager {
 
@@ -15,7 +16,10 @@ class DownloadManager {
     }
 
     private val completedStreams = mutableListOf<InputStream>()
-    private val client = OkHttpClient()
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .build()
     private val urlsQueue: ArrayDeque<String> = ArrayDeque()
     private lateinit var listener: OnRequestFinishListener
 
