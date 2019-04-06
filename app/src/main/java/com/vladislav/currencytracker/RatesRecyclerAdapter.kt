@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.rv_row_currency.view.*
 
 
-class RecyclerAdapter(private val rates: List<DayExchangeRates>) :
-    RecyclerView.Adapter<RecyclerAdapter.ExchangeRatesHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapter.ExchangeRatesHolder {
+class RatesRecyclerAdapter(private val rates: List<DayExchangeRates>) :
+    RecyclerView.Adapter<RatesRecyclerAdapter.ExchangeRatesHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RatesRecyclerAdapter.ExchangeRatesHolder {
         val inflater = LayoutInflater.from(parent.context)
         val inflatedView = inflater.inflate(R.layout.rv_row_currency, parent, false)
         return ExchangeRatesHolder(inflatedView)
@@ -19,7 +19,7 @@ class RecyclerAdapter(private val rates: List<DayExchangeRates>) :
         return rates[0].exchangeRates.size
     }
 
-    override fun onBindViewHolder(holder: RecyclerAdapter.ExchangeRatesHolder, position: Int) {
+    override fun onBindViewHolder(holder: RatesRecyclerAdapter.ExchangeRatesHolder, position: Int) {
         val firstItem: CurrencyItem = rates[0].exchangeRates[position]
         val secondItem: CurrencyItem = rates[1].exchangeRates[position]
         holder.bindCurrencyItems(firstItem, secondItem)

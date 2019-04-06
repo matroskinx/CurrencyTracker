@@ -4,8 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
-import android.util.Log
-import android.util.Xml
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -13,13 +11,12 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import java.io.InputStream
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: ExchangeRateRepository
     private lateinit var linearLayoutManager: LinearLayoutManager
-    private lateinit var adapter: RecyclerAdapter
+    private lateinit var adapter: RatesRecyclerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Data downloaded", Toast.LENGTH_LONG).show()
             first_date.text = it[0].date
             second_date.text = it[1].date
-            adapter = RecyclerAdapter(it)
+            adapter = RatesRecyclerAdapter(it)
             rv_currency.adapter = adapter
         }
 
