@@ -10,12 +10,17 @@ import java.util.*
 class SettingsRecyclerAdapter(
     private val rate: DayExchangeRates,
     private val settings: MutableList<SettingsItem>,
-    private val listener: OnItemClickListener
+    private val listener: OnItemClickListener,
+    private val dragListener: OnItemDragListener
 ) :
     RecyclerView.Adapter<SettingsRecyclerAdapter.SettingsHolder>(), ItemTouchHelperCallback.ItemTouchHelperAdapter {
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
+    }
+
+    interface OnItemDragListener {
+        fun onItemDrag(fromPosition: Int, toPosition: Int)
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
@@ -29,6 +34,7 @@ class SettingsRecyclerAdapter(
             }
         }
         notifyItemMoved(fromPosition, toPosition)
+        dragListener.onItemDrag(fromPosition, toPosition)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsRecyclerAdapter.SettingsHolder {

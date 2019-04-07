@@ -71,6 +71,14 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
         getVisibleRates(exchangeRates)
     }
 
+    fun positionChanged(fromPosition: Int, toPosition: Int)
+    {
+        val settingsItem = settingsList.removeAt(fromPosition)
+        settingsList.add(toPosition, settingsItem)
+        getVisibleRates(exchangeRates)
+
+    }
+
     companion object {
         const val TAG = "ExchangeRateRepository"
     }

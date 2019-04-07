@@ -16,12 +16,17 @@ class SettingsFragment : Fragment() {
     private lateinit var viewModel: ExchangeRateRepository
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: SettingsRecyclerAdapter
-    private val itemClickListener: SettingsRecyclerAdapter.OnItemClickListener =
-        object : SettingsRecyclerAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int) {
-                viewModel.visibilityChanged(position)
-            }
+
+    private val itemClickListener = object : SettingsRecyclerAdapter.OnItemClickListener {
+        override fun onItemClick(position: Int) {
+            viewModel.visibilityChanged(position)
         }
+    }
+    private val itemDragListener = object : SettingsRecyclerAdapter.OnItemDragListener {
+        override fun onItemDrag(fromPosition: Int, toPosition: Int) {
+            viewModel.positionChanged(fromPosition, toPosition)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
@@ -41,7 +46,12 @@ class SettingsFragment : Fragment() {
         rv_settings.layoutManager = linearLayoutManager
         rv_settings.setHasFixedSize(true)
 
-        adapter = SettingsRecyclerAdapter(viewModel.exchangeRates[0], viewModel.settingsList, itemClickListener)
+        adapter = SettingsRecyclerAdapter(
+            viewModel.exchangeRates[0],
+            viewModel.settingsList,
+            itemClickListener,
+            itemDragListener
+        )
         rv_settings.adapter = adapter
 
         val callback = ItemTouchHelperCallback(adapter)
