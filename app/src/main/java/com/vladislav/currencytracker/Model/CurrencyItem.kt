@@ -1,4 +1,4 @@
-package com.vladislav.currencytracker
+package com.vladislav.currencytracker.Model
 
 data class CurrencyItem(
     val id: String,

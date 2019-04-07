@@ -1,10 +1,11 @@
-package com.vladislav.currencytracker
+package com.vladislav.currencytracker.View
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.vladislav.currencytracker.R
 
 
 class MainActivity : AppCompatActivity() {

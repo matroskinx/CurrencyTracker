@@ -1,9 +1,14 @@
-package com.vladislav.currencytracker
+package com.vladislav.currencytracker.Adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.vladislav.currencytracker.Utility.ItemTouchHelperCallback
+import com.vladislav.currencytracker.Model.CurrencyItem
+import com.vladislav.currencytracker.Model.DayExchangeRates
+import com.vladislav.currencytracker.Model.SettingsItem
+import com.vladislav.currencytracker.R
 import kotlinx.android.synthetic.main.rv_row_settings.view.*
 
 
@@ -13,7 +18,8 @@ class SettingsRecyclerAdapter(
     private val listener: OnItemClickListener,
     private val dragListener: OnItemDragListener
 ) :
-    RecyclerView.Adapter<SettingsRecyclerAdapter.SettingsHolder>(), ItemTouchHelperCallback.ItemTouchHelperAdapter {
+    RecyclerView.Adapter<SettingsRecyclerAdapter.SettingsHolder>(),
+    ItemTouchHelperCallback.ItemTouchHelperAdapter {
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
@@ -28,7 +34,7 @@ class SettingsRecyclerAdapter(
         dragListener.onItemDrag(fromPosition, toPosition)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsRecyclerAdapter.SettingsHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsHolder {
         val inflater = LayoutInflater.from(parent.context)
         val inflatedView = inflater.inflate(R.layout.rv_row_settings, parent, false)
         return SettingsHolder(inflatedView)
@@ -38,7 +44,7 @@ class SettingsRecyclerAdapter(
         return settings.size
     }
 
-    override fun onBindViewHolder(holder: SettingsRecyclerAdapter.SettingsHolder, position: Int) {
+    override fun onBindViewHolder(holder: SettingsHolder, position: Int) {
         val currencyItem: CurrencyItem = rate.exchangeRates[position]
         val isSelected = settings[position].isSelected
         holder.bindSettingsItems(currencyItem, isSelected, listener)

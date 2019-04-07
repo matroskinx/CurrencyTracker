@@ -1,15 +1,18 @@
-package com.vladislav.currencytracker
+package com.vladislav.currencytracker.Adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.vladislav.currencytracker.Model.CurrencyItem
+import com.vladislav.currencytracker.Model.DayExchangeRates
+import com.vladislav.currencytracker.R
 import kotlinx.android.synthetic.main.rv_row_currency.view.*
 
 
 class RatesRecyclerAdapter(private val rates: List<DayExchangeRates>) :
     RecyclerView.Adapter<RatesRecyclerAdapter.ExchangeRatesHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RatesRecyclerAdapter.ExchangeRatesHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExchangeRatesHolder {
         val inflater = LayoutInflater.from(parent.context)
         val inflatedView = inflater.inflate(R.layout.rv_row_currency, parent, false)
         return ExchangeRatesHolder(inflatedView)
@@ -19,7 +22,7 @@ class RatesRecyclerAdapter(private val rates: List<DayExchangeRates>) :
         return rates[0].exchangeRates.size
     }
 
-    override fun onBindViewHolder(holder: RatesRecyclerAdapter.ExchangeRatesHolder, position: Int) {
+    override fun onBindViewHolder(holder: ExchangeRatesHolder, position: Int) {
         val firstItem: CurrencyItem = rates[0].exchangeRates[position]
         val secondItem: CurrencyItem = rates[1].exchangeRates[position]
         holder.bindCurrencyItems(firstItem, secondItem)

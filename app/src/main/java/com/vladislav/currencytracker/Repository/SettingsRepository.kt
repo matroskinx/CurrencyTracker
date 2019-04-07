@@ -1,11 +1,13 @@
-package com.vladislav.currencytracker
+package com.vladislav.currencytracker.Repository
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.vladislav.currencytracker.Model.DayExchangeRates
+import com.vladislav.currencytracker.Model.SettingsItem
 
 
-class SettingsManager(private val prefs: SharedPreferences) {
+class SettingsRepository(private val prefs: SharedPreferences) {
 
     fun saveSettings(settingsList: MutableList<SettingsItem>) {
         val gson = Gson()
@@ -32,8 +34,8 @@ class SettingsManager(private val prefs: SharedPreferences) {
     fun readSettings(rates: DayExchangeRates): MutableList<SettingsItem> {
         prefs.getString(PREF_KEY, null)?.let {
             val gson = Gson()
-            val turnsType = object : TypeToken<MutableList<SettingsItem>>() {}.type
-            return gson.fromJson(it, turnsType)
+            val ratesType = object : TypeToken<MutableList<SettingsItem>>() {}.type
+            return gson.fromJson(it, ratesType)
         } ?: return getBasicSettings(rates)
     }
 

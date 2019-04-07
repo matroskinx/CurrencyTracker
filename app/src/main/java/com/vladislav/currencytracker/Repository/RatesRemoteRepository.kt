@@ -1,5 +1,7 @@
-package com.vladislav.currencytracker
+package com.vladislav.currencytracker.Repository
 
+import com.vladislav.currencytracker.Model.DayExchangeRates
+import com.vladislav.currencytracker.Utility.XmlParser
 import okhttp3.*
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
@@ -8,7 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class DownloadManager {
+class RatesRemoteRepository {
 
     interface OnRequestFinishListener {
         fun onRequestFailure(exceptionMessage: String)
@@ -69,7 +71,8 @@ class DownloadManager {
 
         lateinit var tomorrowRates: DayExchangeRates
         val todayRates: DayExchangeRates = XmlParser(completedStreams[TODAY]!!).parse()
-        val yesterdayRates: DayExchangeRates = XmlParser(completedStreams[YESTERDAY]!!).parse()
+        val yesterdayRates: DayExchangeRates = XmlParser(completedStreams[YESTERDAY]!!)
+            .parse()
 
         try {
             tomorrowRates = XmlParser(completedStreams[TOMORROW]!!).parse()

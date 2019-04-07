@@ -1,4 +1,4 @@
-package com.vladislav.currencytracker
+package com.vladislav.currencytracker.Utility
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView

@@ -1,7 +1,9 @@
-package com.vladislav.currencytracker
+package com.vladislav.currencytracker.Utility
 
 import android.util.Log
 import android.util.Xml
+import com.vladislav.currencytracker.Model.CurrencyItem
+import com.vladislav.currencytracker.Model.DayExchangeRates
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.InputStream
@@ -15,8 +17,7 @@ class XmlParser(val inputStream: InputStream) {
         parser.nextTag()
         parser.require(XmlPullParser.START_TAG, null, ROOT_TAG)
 
-        if(parser.isEmptyElementTag)
-        {
+        if (parser.isEmptyElementTag) {
             Log.d("Parser", "empty tag")
             throw XmlPullParserException("Document is empty. Rates are not available")
         }

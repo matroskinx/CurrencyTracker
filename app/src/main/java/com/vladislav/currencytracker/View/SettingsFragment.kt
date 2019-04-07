@@ -1,4 +1,4 @@
-package com.vladislav.currencytracker
+package com.vladislav.currencytracker.View
 
 import android.os.Bundle
 import android.view.*
@@ -9,12 +9,16 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.vladislav.currencytracker.ViewModel.RatesViewModel
+import com.vladislav.currencytracker.Utility.ItemTouchHelperCallback
+import com.vladislav.currencytracker.R
+import com.vladislav.currencytracker.Adapters.SettingsRecyclerAdapter
 import kotlinx.android.synthetic.main.fragment_settings.*
 import java.lang.IllegalStateException
 
 class SettingsFragment : Fragment(), OnBackPressedCallback {
 
-    private lateinit var viewModel: ExchangeRateRepository
+    private lateinit var viewModel: RatesViewModel
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var adapter: SettingsRecyclerAdapter
 
@@ -47,7 +51,7 @@ class SettingsFragment : Fragment(), OnBackPressedCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            viewModel = ViewModelProviders.of(it).get(ExchangeRateRepository::class.java)
+            viewModel = ViewModelProviders.of(it).get(RatesViewModel::class.java)
         } ?: throw IllegalStateException("Invalid activity")
     }
 

@@ -1,4 +1,4 @@
-package com.vladislav.currencytracker
+package com.vladislav.currencytracker.ViewModel
 
 import android.content.SharedPreferences
 import android.util.Log
@@ -6,10 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.vladislav.currencytracker.Model.CurrencyItem
+import com.vladislav.currencytracker.Model.DayExchangeRates
+import com.vladislav.currencytracker.Model.SettingsItem
+import com.vladislav.currencytracker.Repository.RatesRemoteRepository
+import com.vladislav.currencytracker.Repository.SettingsRepository
 import java.util.*
 
 
-class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewModel() {
+class RatesViewModel : RatesRemoteRepository.OnRequestFinishListener, ViewModel() {
 
     var exchangeRates = listOf<DayExchangeRates>()
     val visibleRates = MutableLiveData<List<DayExchangeRates>>()
@@ -20,14 +25,14 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
     private var isLoaded = false
     private var jsonBackupSettings: String = ""
     private var jsonBackupExchangeRates: String = ""
-    private val downloadManager = DownloadManager()
-    private lateinit var settingsManager: SettingsManager
+    private val downloadManager = RatesRemoteRepository()
+    private lateinit var settingsRepository: SettingsRepository
 
     override fun onRequestSuccess(rates: List<DayExchangeRates>) {
         isLoading.postValue(false)
         isLoaded = true
         exchangeRates = rates
-        settingsList = settingsManager.readSettings(rates[0])
+        settingsList = settingsRepository.readSettings(rates[0])
         getVisibleRates(rates)
     }
 
@@ -43,7 +48,7 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
             return
         }
         isLoading.value = true
-        settingsManager = SettingsManager(sharedPreferences)
+        settingsRepository = SettingsRepository(sharedPreferences)
         downloadManager.setOnDownloadCompleteListener(this)
         downloadManager.downloadAll()
     }
@@ -69,8 +74,10 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
             }
         }
 
-        val firstDayExchangeRates = DayExchangeRates(firstRatesSorted, exchangeRates[0].date)
-        val secondDayExchangeRates = DayExchangeRates(secondRatesSorted, exchangeRates[1].date)
+        val firstDayExchangeRates =
+            DayExchangeRates(firstRatesSorted, exchangeRates[0].date)
+        val secondDayExchangeRates =
+            DayExchangeRates(secondRatesSorted, exchangeRates[1].date)
         exchangeRates = listOf(firstDayExchangeRates, secondDayExchangeRates)
     }
 
@@ -97,8 +104,10 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
             }
         }
 
-        val firstDayExchangeRates = DayExchangeRates(firstRatesSorted, rates[0].date)
-        val secondDayExchangeRates = DayExchangeRates(secondRatesSorted, rates[1].date)
+        val firstDayExchangeRates =
+            DayExchangeRates(firstRatesSorted, rates[0].date)
+        val secondDayExchangeRates =
+            DayExchangeRates(secondRatesSorted, rates[1].date)
         return mutableListOf(firstDayExchangeRates, secondDayExchangeRates)
     }
 
@@ -119,7 +128,7 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
     fun saveSettingsChanges() {
         sortExchangeRates()
         getVisibleRates(exchangeRates)
-        settingsManager.saveSettings(settingsList)
+        settingsRepository.saveSettings(settingsList)
     }
 
     fun discardSettingsChanges() {
@@ -131,7 +140,7 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
     }
 
     companion object {
-        const val TAG = "ExchangeRateRepository"
+        const val TAG = "RatesViewModel"
     }
 
 }
