@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.rv_row_settings.view.*
-import java.util.*
+
 
 class SettingsRecyclerAdapter(
     private val rate: DayExchangeRates,
@@ -24,15 +24,6 @@ class SettingsRecyclerAdapter(
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
-        if (fromPosition < toPosition) {
-            for (i in fromPosition until toPosition) {
-                Collections.swap(rate.exchangeRates, i, i + 1)
-            }
-        } else {
-            for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(rate.exchangeRates, i, i - 1)
-            }
-        }
         notifyItemMoved(fromPosition, toPosition)
         dragListener.onItemDrag(fromPosition, toPosition)
     }

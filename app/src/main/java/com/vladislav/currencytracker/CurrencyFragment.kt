@@ -84,6 +84,9 @@ class CurrencyFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.settingsFragment) {
+            viewModel.backupSettings()
+        }
         return NavigationUI.onNavDestinationSelected(item, view!!.findNavController())
                 || super.onOptionsItemSelected(item)
     }

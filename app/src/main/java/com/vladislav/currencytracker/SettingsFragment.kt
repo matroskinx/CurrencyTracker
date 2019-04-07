@@ -65,6 +65,10 @@ class SettingsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.currencyFragment -> viewModel.saveSettingsChanges()
+            android.R.id.home -> viewModel.discardSettingsChanges()
+        }
         return NavigationUI.onNavDestinationSelected(item, view!!.findNavController())
                 || super.onOptionsItemSelected(item)
     }
