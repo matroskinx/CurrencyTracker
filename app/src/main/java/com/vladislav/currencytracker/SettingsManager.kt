@@ -18,19 +18,25 @@ class SettingsManager(private val prefs: SharedPreferences) {
         }
     }
 
-    private fun getBasicSettings(): MutableList<SettingsItem> = mutableListOf(
-        SettingsItem(USD_ID, true),
-        SettingsItem(EUR_ID, true),
-        SettingsItem(RUB_ID, true)
-    )
+    private fun getBasicSettings(rates: DayExchangeRates): MutableList<SettingsItem> {
+        val basicSettings = mutableListOf<SettingsItem>()
+        for (rate in rates.exchangeRates) {
+            if (rate.id == USD_ID || rate.id == EUR_ID || rate.id == RUB_ID) {
+                basicSettings.add(SettingsItem(rate.id, true))
+            } else {
+                basicSettings.add(SettingsItem(rate.id, false))
+            }
+        }
+        return basicSettings
+    }
 
 
-    fun readSettings(): MutableList<SettingsItem> {
+    fun readSettings(rates: DayExchangeRates): MutableList<SettingsItem> {
         prefs.getString(PREF_KEY, null)?.let {
             val gson = Gson()
             val turnsType = object : TypeToken<MutableList<SettingsItem>>() {}.type
             return gson.fromJson(it, turnsType)
-        } ?: return getBasicSettings()
+        } ?: return getBasicSettings(rates)
     }
 
     companion object {

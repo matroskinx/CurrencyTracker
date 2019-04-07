@@ -14,10 +14,14 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
     var isLoading: MutableLiveData<Boolean> = MutableLiveData()
     private var isLoaded = false
 
+    private val downloadManager = DownloadManager()
+    private lateinit var settingsManager: SettingsManager
+
     override fun onRequestSuccess(rates: List<DayExchangeRates>) {
         isLoading.postValue(false)
         isLoaded = true
         exchangeRates = rates
+        settingsList = settingsManager.readSettings(rates[0])
         getVisibleRates(rates)
     }
 
@@ -28,12 +32,11 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
     }
 
     fun getRates(sharedPreferences: SharedPreferences) {
-        if(isLoaded) {
+        if (isLoaded) {
             return
         }
         isLoading.value = true
-        settingsList = SettingsManager(sharedPreferences).readSettings()
-        val downloadManager = DownloadManager()
+        settingsManager = SettingsManager(sharedPreferences)
         downloadManager.setOnDownloadCompleteListener(this)
         downloadManager.downloadAll()
     }
@@ -61,6 +64,11 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
         val secondDayExchangeRates = DayExchangeRates(secondRatesSorted, rates[1].date)
         val configuredList = listOf(firstDayExchangeRates, secondDayExchangeRates)
         visibleRates.postValue(configuredList)
+    }
+
+    fun visibilityChanged(position: Int) {
+        settingsList[position].isSelected = !settingsList[position].isSelected
+        getVisibleRates(exchangeRates)
     }
 
     companion object {
