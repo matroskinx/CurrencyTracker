@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -43,7 +44,6 @@ class CurrencyFragment : Fragment() {
             invalidateOptionsMenu(activity)
         }
 
-
         val isLoadingObserver = Observer<Boolean> {
             if (it) {
                 progressBar.visibility = View.VISIBLE
@@ -52,9 +52,15 @@ class CurrencyFragment : Fragment() {
             }
         }
 
+        val hasErrorObserver = Observer<Boolean> {
+            if (it) {
+                Toast.makeText(activity, "Failed to load rates", Toast.LENGTH_LONG).show()
+            }
+        }
 
         viewModel.visibleRates.observe(this, exchangeRatesObserver)
         viewModel.isLoading.observe(this, isLoadingObserver)
+        viewModel.hasError.observe(this, hasErrorObserver)
 
         sharedPreferences?.let {
             viewModel.getRates(it)
@@ -84,7 +90,7 @@ class CurrencyFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.settingsFragment) {
+        if (item.itemId == R.id.settingsFragment) {
             viewModel.backupSettings()
         }
         return NavigationUI.onNavDestinationSelected(item, view!!.findNavController())

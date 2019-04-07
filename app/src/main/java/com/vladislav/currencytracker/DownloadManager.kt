@@ -32,9 +32,18 @@ class DownloadManager {
                 val tag: Int = call.request().tag() as Int
                 completedStreams[tag] = it.byteStream()
                 if (completedStreams.size == urlsToLoad.size) {
-                    listener.onRequestSuccess(processStreams())
+                    formResponse()
                 }
             }
+        }
+    }
+
+    private fun formResponse() {
+        try {
+            val processedData = processStreams()
+            listener.onRequestSuccess(processedData)
+        } catch (e: XmlPullParserException) {
+            listener.onRequestFailure(e.localizedMessage)
         }
     }
 
@@ -57,6 +66,7 @@ class DownloadManager {
     }
 
     private fun processStreams(): List<DayExchangeRates> {
+
         lateinit var tomorrowRates: DayExchangeRates
         val todayRates: DayExchangeRates = XmlParser(completedStreams[TODAY]!!).parse()
         val yesterdayRates: DayExchangeRates = XmlParser(completedStreams[YESTERDAY]!!).parse()
@@ -64,6 +74,7 @@ class DownloadManager {
         try {
             tomorrowRates = XmlParser(completedStreams[TOMORROW]!!).parse()
         } catch (e: XmlPullParserException) {
+            listener.onRequestFailure(e.localizedMessage)
             return listOf(yesterdayRates, todayRates)
         }
 

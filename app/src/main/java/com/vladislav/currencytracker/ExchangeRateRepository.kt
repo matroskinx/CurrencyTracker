@@ -15,6 +15,7 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
     val visibleRates = MutableLiveData<List<DayExchangeRates>>()
     var settingsList = mutableListOf<SettingsItem>()
     var isLoading: MutableLiveData<Boolean> = MutableLiveData()
+    var hasError: MutableLiveData<Boolean> = MutableLiveData()
     private var isLoaded = false
     private var jsonBackupSettings: String = ""
     private var jsonBackupExchangeRates: String = ""
@@ -32,6 +33,7 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
     override fun onRequestFailure(exceptionMessage: String) {
         isLoading.postValue(false)
         isLoaded = false
+        hasError.postValue(true)
         Log.d(TAG, "Failed to download data: $exceptionMessage")
     }
 
@@ -81,7 +83,7 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
         val secondRatesSorted: MutableList<CurrencyItem> = mutableListOf()
 
         val selectedSettings = settings.filter { it.isSelected }
-        
+
         for (item in selectedSettings) {
             val rate = firstRatesFull.find { it.id == item.id}
             rate?.let {
