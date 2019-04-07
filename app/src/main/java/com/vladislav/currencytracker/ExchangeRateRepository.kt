@@ -115,6 +115,7 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
     fun saveSettingsChanges() {
         sortExchangeRates()
         getVisibleRates(exchangeRates)
+        settingsManager.saveSettings(settingsList)
     }
 
     fun discardSettingsChanges() {
