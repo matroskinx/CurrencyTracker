@@ -8,10 +8,8 @@ import com.google.gson.reflect.TypeToken
 class SettingsManager(private val prefs: SharedPreferences) {
 
     fun saveSettings(settingsList: MutableList<SettingsItem>) {
-
         val gson = Gson()
         val jsonSettingsList: String = gson.toJson(settingsList)
-
         with(prefs.edit()) {
             putString(PREF_KEY, jsonSettingsList)
             apply()

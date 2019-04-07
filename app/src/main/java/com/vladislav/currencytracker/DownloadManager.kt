@@ -15,27 +15,24 @@ class DownloadManager {
         fun onRequestSuccess(rates: List<DayExchangeRates>)
     }
 
-    private val completedStreams = mutableListOf<InputStream>()
+    private val completedStreams = mutableMapOf<Int, InputStream>()
+    private val urlsToLoad = mutableMapOf<Int, String>()
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .build()
-    private val urlsQueue: ArrayDeque<String> = ArrayDeque()
     private lateinit var listener: OnRequestFinishListener
-
     private val requestCallback = object : Callback {
         override fun onFailure(call: Call, e: IOException) {
             listener.onRequestFailure(e.localizedMessage)
         }
 
-
         override fun onResponse(call: Call, response: Response) {
             response.body()?.let {
-                completedStreams.add(it.byteStream())
-                if (urlsQueue.isEmpty()) {
+                val tag: Int = call.request().tag() as Int
+                completedStreams[tag] = it.byteStream()
+                if (completedStreams.size == urlsToLoad.size) {
                     listener.onRequestSuccess(processStreams())
-                } else {
-                    makeRequest(urlsQueue.pop())
                 }
             }
         }
@@ -43,28 +40,29 @@ class DownloadManager {
 
     private fun formUrls() {
         val currentDate = Calendar.getInstance()
-
         val dateDayBefore = Calendar.getInstance()
-        dateDayBefore.roll(Calendar.DAY_OF_MONTH, false)
 
+        dateDayBefore.roll(Calendar.DAY_OF_MONTH, false)
         val dateDayAfter = Calendar.getInstance()
         dateDayAfter.roll(Calendar.DAY_OF_MONTH, true)
 
         val sdf = SimpleDateFormat("MM.dd.yyyy")
-
         val todayUrl = BASE_URL + sdf.format(currentDate.time)
         val tomorrowUrl = BASE_URL + sdf.format(dateDayAfter.time)
         val yesterdayUrl = BASE_URL + sdf.format(dateDayBefore.time)
-        urlsQueue.addAll(listOf(todayUrl, tomorrowUrl, yesterdayUrl))
+
+        urlsToLoad[TODAY] = todayUrl
+        urlsToLoad[TOMORROW] = tomorrowUrl
+        urlsToLoad[YESTERDAY] = yesterdayUrl
     }
 
     private fun processStreams(): List<DayExchangeRates> {
         lateinit var tomorrowRates: DayExchangeRates
-        val todayRates: DayExchangeRates = XmlParser(completedStreams[TODAY]).parse()
-        val yesterdayRates: DayExchangeRates = XmlParser(completedStreams[YESTERDAY]).parse()
+        val todayRates: DayExchangeRates = XmlParser(completedStreams[TODAY]!!).parse()
+        val yesterdayRates: DayExchangeRates = XmlParser(completedStreams[YESTERDAY]!!).parse()
 
         try {
-            tomorrowRates = XmlParser(completedStreams[TOMORROW]).parse()
+            tomorrowRates = XmlParser(completedStreams[TOMORROW]!!).parse()
         } catch (e: XmlPullParserException) {
             return listOf(yesterdayRates, todayRates)
         }
@@ -78,16 +76,16 @@ class DownloadManager {
 
     fun downloadAll() {
         formUrls()
-        if (!urlsQueue.isEmpty()) {
-            makeRequest(urlsQueue.pop())
+        for (item in urlsToLoad) {
+            makeRequest(item.value, item.key)
         }
     }
 
-    private fun makeRequest(url: String) {
+    private fun makeRequest(url: String, tag: Int) {
         val request = Request.Builder()
+            .tag(tag)
             .url(url)
             .build()
-
         client.newCall(request).enqueue(requestCallback)
     }
 

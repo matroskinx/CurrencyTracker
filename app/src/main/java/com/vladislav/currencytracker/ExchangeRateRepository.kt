@@ -80,14 +80,15 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
         val firstRatesSorted: MutableList<CurrencyItem> = mutableListOf()
         val secondRatesSorted: MutableList<CurrencyItem> = mutableListOf()
 
-        //TODO optimize search
-        for (item in settings) {
-            val rate = firstRatesFull.find { it.id == item.id && item.isSelected }
+        val selectedSettings = settings.filter { it.isSelected }
+        
+        for (item in selectedSettings) {
+            val rate = firstRatesFull.find { it.id == item.id}
             rate?.let {
                 firstRatesSorted.add(rate)
             }
 
-            val rate2 = secondRatesFull.find { it.id == item.id && item.isSelected }
+            val rate2 = secondRatesFull.find { it.id == item.id }
             rate2?.let {
                 secondRatesSorted.add(rate2)
             }
