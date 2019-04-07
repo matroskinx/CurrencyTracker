@@ -77,7 +77,6 @@ class RatesRemoteRepository {
         try {
             tomorrowRates = XmlParser(completedStreams[TOMORROW]!!).parse()
         } catch (e: XmlPullParserException) {
-            listener.onRequestFailure(e.localizedMessage)
             return listOf(yesterdayRates, todayRates)
         }
 

@@ -33,7 +33,7 @@ class RatesViewModel : RatesRemoteRepository.OnRequestFinishListener, ViewModel(
         isLoaded = true
         exchangeRates = rates
         settingsList = settingsRepository.readSettings(rates[0])
-        getVisibleRates(rates)
+        getVisibleRates()
     }
 
     override fun onRequestFailure(exceptionMessage: String) {
@@ -53,8 +53,8 @@ class RatesViewModel : RatesRemoteRepository.OnRequestFinishListener, ViewModel(
         downloadManager.downloadAll()
     }
 
-    private fun getVisibleRates(rates: List<DayExchangeRates>) {
-        val configuredList = sortVisibleRates(rates, settingsList)
+    private fun getVisibleRates() {
+        val configuredList = sortVisibleRates()
         visibleRates.postValue(configuredList)
     }
 
@@ -74,26 +74,21 @@ class RatesViewModel : RatesRemoteRepository.OnRequestFinishListener, ViewModel(
             }
         }
 
-        val firstDayExchangeRates =
-            DayExchangeRates(firstRatesSorted, exchangeRates[0].date)
-        val secondDayExchangeRates =
-            DayExchangeRates(secondRatesSorted, exchangeRates[1].date)
-        exchangeRates = listOf(firstDayExchangeRates, secondDayExchangeRates)
+        val firstDayRates = DayExchangeRates(firstRatesSorted, exchangeRates[0].date)
+        val secondDayRates = DayExchangeRates(secondRatesSorted, exchangeRates[1].date)
+        exchangeRates = listOf(firstDayRates, secondDayRates)
     }
 
-    private fun sortVisibleRates(
-        rates: List<DayExchangeRates>,
-        settings: MutableList<SettingsItem>
-    ): MutableList<DayExchangeRates> {
-        val firstRatesFull: MutableList<CurrencyItem> = rates[0].exchangeRates
-        val secondRatesFull: MutableList<CurrencyItem> = rates[1].exchangeRates
+    private fun sortVisibleRates(): MutableList<DayExchangeRates> {
+        val firstRatesFull = exchangeRates[0].exchangeRates
+        val secondRatesFull = exchangeRates[1].exchangeRates
         val firstRatesSorted: MutableList<CurrencyItem> = mutableListOf()
         val secondRatesSorted: MutableList<CurrencyItem> = mutableListOf()
 
-        val selectedSettings = settings.filter { it.isSelected }
+        val selectedSettings = settingsList.filter { it.isSelected }
 
         for (item in selectedSettings) {
-            val rate = firstRatesFull.find { it.id == item.id}
+            val rate = firstRatesFull.find { it.id == item.id }
             rate?.let {
                 firstRatesSorted.add(rate)
             }
@@ -104,11 +99,9 @@ class RatesViewModel : RatesRemoteRepository.OnRequestFinishListener, ViewModel(
             }
         }
 
-        val firstDayExchangeRates =
-            DayExchangeRates(firstRatesSorted, rates[0].date)
-        val secondDayExchangeRates =
-            DayExchangeRates(secondRatesSorted, rates[1].date)
-        return mutableListOf(firstDayExchangeRates, secondDayExchangeRates)
+        val firstDayRates = DayExchangeRates(firstRatesSorted, exchangeRates[0].date)
+        val secondDayRates = DayExchangeRates(secondRatesSorted, exchangeRates[1].date)
+        return mutableListOf(firstDayRates, secondDayRates)
     }
 
     fun visibilityChanged(position: Int) {
@@ -127,7 +120,7 @@ class RatesViewModel : RatesRemoteRepository.OnRequestFinishListener, ViewModel(
 
     fun saveSettingsChanges() {
         sortExchangeRates()
-        getVisibleRates(exchangeRates)
+        getVisibleRates()
         settingsRepository.saveSettings(settingsList)
     }
 
