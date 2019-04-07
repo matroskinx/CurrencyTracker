@@ -2,6 +2,7 @@ package com.vladislav.currencytracker
 
 import android.os.Bundle
 import android.view.*
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
@@ -11,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_settings.*
 import java.lang.IllegalStateException
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : Fragment(), OnBackPressedCallback {
 
     private lateinit var viewModel: ExchangeRateRepository
     private lateinit var linearLayoutManager: LinearLayoutManager
@@ -26,6 +27,16 @@ class SettingsFragment : Fragment() {
         override fun onItemDrag(fromPosition: Int, toPosition: Int) {
             viewModel.positionChanged(fromPosition, toPosition)
         }
+    }
+
+    override fun handleOnBackPressed(): Boolean {
+        viewModel.discardSettingsChanges()
+        return false
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
