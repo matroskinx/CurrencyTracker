@@ -14,8 +14,9 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
     var exchangeRates = listOf<DayExchangeRates>()
     val visibleRates = MutableLiveData<List<DayExchangeRates>>()
     var settingsList = mutableListOf<SettingsItem>()
-    var isLoading: MutableLiveData<Boolean> = MutableLiveData()
-    var hasError: MutableLiveData<Boolean> = MutableLiveData()
+    var isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
+    var hasError: MutableLiveData<Boolean> = MutableLiveData(false)
+
     private var isLoaded = false
     private var jsonBackupSettings: String = ""
     private var jsonBackupExchangeRates: String = ""
@@ -38,7 +39,7 @@ class ExchangeRateRepository : DownloadManager.OnRequestFinishListener, ViewMode
     }
 
     fun getRates(sharedPreferences: SharedPreferences) {
-        if (isLoaded) {
+        if (isLoaded || isLoading.value == true) {
             return
         }
         isLoading.value = true

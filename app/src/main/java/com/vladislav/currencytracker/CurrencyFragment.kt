@@ -2,10 +2,12 @@ package com.vladislav.currencytracker
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.core.app.ActivityCompat.invalidateOptionsMenu
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -63,7 +65,12 @@ class CurrencyFragment : Fragment() {
         viewModel.hasError.observe(this, hasErrorObserver)
 
         sharedPreferences?.let {
-            viewModel.getRates(it)
+            if(isNetworkConnected()) {
+                viewModel.getRates(it)
+            }
+            else{
+                Toast.makeText(activity, "No connectivity", Toast.LENGTH_LONG).show()
+            }
         } ?: throw IllegalStateException("Unable to get preferences")
     }
 
@@ -87,6 +94,11 @@ class CurrencyFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    private fun isNetworkConnected(): Boolean {
+        val connectivityManager = activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return connectivityManager.activeNetworkInfo != null
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
