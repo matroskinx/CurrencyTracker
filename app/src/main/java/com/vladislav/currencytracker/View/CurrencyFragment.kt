@@ -17,6 +17,7 @@ import com.vladislav.currencytracker.ViewModel.RatesViewModel
 import com.vladislav.currencytracker.Model.DayExchangeRates
 import com.vladislav.currencytracker.R
 import com.vladislav.currencytracker.Adapters.RatesRecyclerAdapter
+import com.vladislav.currencytracker.ViewModel.RatesViewModelFactory
 import kotlinx.android.synthetic.main.fragment_currency.*
 import java.lang.IllegalStateException
 
@@ -68,10 +69,9 @@ class CurrencyFragment : Fragment() {
         viewModel.hasError.observe(this, hasErrorObserver)
 
         sharedPreferences?.let {
-            if(isNetworkConnected()) {
-                viewModel.getRates(it)
-            }
-            else{
+            if (isNetworkConnected()) {
+                viewModel.getRates()
+            } else {
                 Toast.makeText(activity, "No connectivity", Toast.LENGTH_LONG).show()
             }
         } ?: throw IllegalStateException("Unable to get preferences")
@@ -88,7 +88,8 @@ class CurrencyFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            viewModel = ViewModelProviders.of(it).get(RatesViewModel::class.java)
+            viewModel = ViewModelProviders.of(it, RatesViewModelFactory(it.getPreferences(Context.MODE_PRIVATE)))
+                .get(RatesViewModel::class.java)
         } ?: throw IllegalStateException("Invalid activity")
 
         sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE)

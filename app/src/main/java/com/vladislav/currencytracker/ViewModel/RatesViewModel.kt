@@ -14,7 +14,8 @@ import com.vladislav.currencytracker.Repository.SettingsRepository
 import java.util.*
 
 
-class RatesViewModel : RatesRemoteRepository.OnRequestFinishListener, ViewModel() {
+class RatesViewModel(val sharedPreferences: SharedPreferences) : RatesRemoteRepository.OnRequestFinishListener,
+    ViewModel() {
 
     var exchangeRates = listOf<DayExchangeRates>()
     val visibleRates = MutableLiveData<List<DayExchangeRates>>()
@@ -43,7 +44,7 @@ class RatesViewModel : RatesRemoteRepository.OnRequestFinishListener, ViewModel(
         Log.d(TAG, "Failed to download data: $exceptionMessage")
     }
 
-    fun getRates(sharedPreferences: SharedPreferences) {
+    fun getRates() {
         if (isLoaded || isLoading.value == true) {
             return
         }

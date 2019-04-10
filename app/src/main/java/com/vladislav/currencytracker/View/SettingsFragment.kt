@@ -1,5 +1,6 @@
 package com.vladislav.currencytracker.View
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.activity.OnBackPressedCallback
@@ -13,6 +14,7 @@ import com.vladislav.currencytracker.ViewModel.RatesViewModel
 import com.vladislav.currencytracker.Utility.ItemTouchHelperCallback
 import com.vladislav.currencytracker.R
 import com.vladislav.currencytracker.Adapters.SettingsRecyclerAdapter
+import com.vladislav.currencytracker.ViewModel.RatesViewModelFactory
 import kotlinx.android.synthetic.main.fragment_settings.*
 import java.lang.IllegalStateException
 
@@ -51,7 +53,8 @@ class SettingsFragment : Fragment(), OnBackPressedCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            viewModel = ViewModelProviders.of(it).get(RatesViewModel::class.java)
+            viewModel = ViewModelProviders.of(it, RatesViewModelFactory(it.getPreferences(Context.MODE_PRIVATE)))
+                .get(RatesViewModel::class.java)
         } ?: throw IllegalStateException("Invalid activity")
     }
 
